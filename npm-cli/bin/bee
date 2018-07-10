@@ -1,0 +1,110 @@
+#! /usr/bin/env node
+let program = require('commander')
+const chalk = require('chalk')
+const shell = require("shelljs")
+const path = require('path')
+const yaml = require('js-yaml')
+const fs   = require('fs')
+const ejs = require('ejs')
+const util = require('util')
+
+const copyUtil = require('./util')
+
+try {
+  let yml = yaml.load(
+    fs.readFileSync('./bee.yml', 'utf8')
+  );
+  let outputDir = yml.Build.files || 'dist'
+  // 是否有dist文件
+  let fullPath = path.resolve(process.cwd(), outputDir)
+  let isExist = fs.existsSync(fullPath)
+  if (!isExist) {
+    shell.exec('mkdir ' + outputDir)
+  }
+  let startTime = Date.now()
+  console.log(chalk.green('开始解析'))
+  // createReadStream是给你一个ReadableStream，你可以听它的'data'，一点一点儿处理文件，用过的部分会被GC（垃圾回收），所以占内存少。 
+  // readFile是把整个文件全部读到内存里。
+  // 读取文件夹及其子文件
+  // copyUtil.copyFolder(path.resolve(process.cwd(), 'template'), path.resolve(process.cwd(), 'app'), err => {
+  //   if (err) {
+  //     return
+  //   }
+  //   console.log(chalk.black.bgGreen('模板文件生成成功！ 执行时间',  Date.now() - startTime+'ms'))
+  // })
+
+  // 替换配置文件
+  const entryConf = require(path.resolve(process.cwd(), 'config.js'))
+  console.log(entryConf.entry)
+  entryConf.entry['detail'] = 'detail.js'
+  const entryStr = `module.exports = ${util.inspect(entryConf)}`
+  
+  // let readeFile = fs.readFileSync(path.resolve(process.cwd(), 'config.js'), 'utf8')
+  // ejs.renderFile(path.resolve(process.cwd(), 'config.js'), {test: 'haha'}, (err, data) => {
+    // console.log('ejs', data)
+    fs.writeFile(path.resolve(process.cwd(), 'config.js'), entryStr, err => {
+      err && console.log(chalk.red(err))
+    })
+  // })
+  // let readeFile = fs.createReadStream(path.resolve(process.cwd(), 'config.js'), {
+  //   flags: 'r',
+  //   encoding: 'utf8',
+  //   autoClose: true,
+  //   mode: 0666,
+  // })
+
+  // readeFile.on('data', chunk => {
+  //   console.log('chunk', chunk)
+  // })
+
+  // readeFile.pipe(fs.createWriteStream('app/config.js'))
+
+  // fs.createReadStream(path.resolve(process.cwd(), 'app/config.js'))
+  // .pipe(fs.createWriteStream('app/app.vue'))
+
+  // let config = require(path.resolve(process.cwd(), 'app/config.js'))
+  // // let readFileContent = fs.readFileSync('app/config.js', 'utf-8')
+  // let configList = config.entry
+  // yml.Pages.forEach(v => {
+  //   if (!~Object.keys(configList).findIndex(v)) {
+  //     configList[v] = v +'.js'
+  //   }
+  // })
+  // fs.writeFile(
+  //   'app/config.js',
+  //   'utf8'
+  // );
+
+} catch (e) {
+  console.log(chalk.red(e.stack))
+}
+
+
+// console.log(process.argv)
+// [ '/usr/local/Cellar/node/10.1.0/bin/node',
+//   '/Users/baidu/Desktop/fun/npm-cli/bin/bee',
+//   '-w' ]
+
+// program
+//   .command('ppya')
+//   .option('--w', '监听入口文件变化，自动执行编译')
+//   // .alias('pp')
+//   .description('文件编译转化啦')
+//   .action(function (option) {
+//     console.log(option)
+//     console.log(chalk.green('success!'))
+//   });
+
+//   // program
+//   //   .version('0.0.1')
+//   //   .description('a test cli program')
+//   //   .option('-n, --name <name>', 'your name', 'GK')
+//   //   .option('-a, --age <age>', 'your age', '22')
+//   //   .option('-e, --enjoy [enjoy]')
+
+// // program.parse(process.argv)
+
+// shell.exec("node " + name, function(err, stdout, stderr) {
+//   console.log(err, stdout, stderr)
+// })
+

@@ -1,0 +1,19 @@
+# Defaults: &defaults
+#   host:     localhost
+#   script: 
+
+Pages: &Pages
+  - Index
+  - Detail
+  - Shop
+
+Build:
+  name : b_manager
+  version : 1.0.0
+  files : app
+  # <<: *Pages
+
+  # {
+    # Pages: [ 'Index', 'Detail', 'Shop' ],
+     # Build: { name: 'b_manager', version: '1.0.0', files: [ './output' ] } 
+  # }
