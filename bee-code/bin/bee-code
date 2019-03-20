@@ -1,0 +1,56 @@
+#!/usr/bin/env node
+// const argv = require('yargs')
+const program = require('commander')
+const colors = require('colors')
+const install = require('./install')
+const list = require('./list')
+const deleteApp = require('./delete')
+const path = require('path')
+const shelljs = require('shelljs')
+// const vfs = require('vinyl-fs')
+// const through = require('through2')
+// const fs = require('fs-extra')
+// const Metalsmith = require('metalsmith')
+
+program
+  .usage('[options] <command>')
+  // .arguments('<command> [options]')
+  // .description(
+  // colors.green('you can run commands: bee-code install|list|remove [options]')
+  // )
+  .option('install [appname]', 'git clone git repository')
+  .option('list', 'List of existing git repository')
+  .option('delete', 'delete something')
+  .option('config', 'show list of appname in .applock')
+  .version(require('../package.json').version, '-v, --version')
+
+if (!process.argv.slice(2).length) {
+  program.outputHelp(makeRed)
+}
+
+function makeRed (txt) {
+  return colors.red(txt)
+}
+
+program.parse(process.argv)
+const lockFilePath = path.resolve(__dirname, '../.applock')
+
+switch (true) {
+  case program.install:
+  case !!program.install:
+    install()
+    break
+  case program.list:
+    list()
+    break
+  case program.delete:
+  case !!program.delete:
+    deleteApp()
+    break
+  case program.config:
+    console.log(`配置文件地址：${colors.green(lockFilePath)}`)
+    shelljs.exec(`cat ${lockFilePath}`)
+    break
+  default:
+    break
+}
