@@ -1,0 +1,23 @@
+{
+  "name": "node-crawler",
+  "description": "async mongoose",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "cheerio": "^1.0.0-rc.2",
+    "child_process": "^1.0.2",
+    "express": "^4.16.4",
+    "mongoose": "^5.4.19",
+    "opn": "^5.5.0",
+    "os": "^0.1.1",
+    "superagent": "^4.1.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
